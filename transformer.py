@@ -55,11 +55,11 @@ class MultiHeadAttention(nn.Module):
         """
         Batch_size * seq_len * d_model -> batch_size * num_heads * seq_len * (d_model // num_heads)
         :param num_heads:
-        :param d_model:
+        :param d_model: The dimensionality of input and output
         :param dropout:
         """
         super(MultiHeadAttention, self).__init__()
-        self.d_model = d_model
+        # self.d_model = d_model
         self.d_k = d_model // num_heads   # head dim
         self.num_heads = num_heads
         self.q_linear = nn.Linear(in_features=d_model, out_features=d_model)
@@ -90,8 +90,8 @@ class MultiHeadAttention(nn.Module):
             scale = scale.masked_fill(mask == 0, -1e9)
         softmax = F.softmax(scale, dim=-1)
         dropout = self.dropout(softmax)
-        output = torch.matmul(dropout, v)
-        return output
+        attn = torch.matmul(dropout, v)
+        return attn
 
 
 class FeedForward(nn.Module):
